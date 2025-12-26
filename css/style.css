@@ -1,1 +1,302 @@
+/* --- SYSTEM CONFLICT THEME STYLING --- */
 
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;700&family=Orbitron:wght@400;900&display=swap');
+
+:root {
+    --glitch-red: #ff003c;
+    --glitch-cyan: #00f0ff;
+    --bg-dark: #050505;
+    --terminal-green: #00ff41;
+    --panel-bg: rgba(10, 10, 15, 0.98);
+    --border-dim: rgba(255, 255, 255, 0.1);
+}
+
+/* --- Base Reset --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: crosshair;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: #e0e0e0;
+    font-family: 'Fira Code', monospace;
+    overflow: hidden;
+    height: 100vh;
+    /* 전체적인 노이즈 텍스처 느낌 추가 */
+    background-image: repeating-radial-gradient(circle at center, transparent 0, rgba(0,0,0,0.2) 2px),
+                      repeating-linear-gradient(rgba(255,255,255,0.02) 0px, transparent 1px);
+}
+
+/* --- Advanced Glitch Animations --- */
+
+@keyframes glitch-skew {
+    0% { transform: skew(0deg); filter: hue-rotate(0deg); }
+    10% { transform: skew(-5deg); filter: hue-rotate(90deg); }
+    20% { transform: skew(5deg); }
+    30% { transform: skew(-2deg); filter: blur(1px); }
+    50% { transform: skew(2deg); }
+    100% { transform: skew(0deg); }
+}
+
+@keyframes glitch-anim {
+    0% { clip: rect(20px, 9999px, 40px, 0); transform: translateX(-5px); }
+    25% { clip: rect(80px, 9999px, 10px, 0); transform: translateX(5px); }
+    50% { clip: rect(10px, 9999px, 70px, 0); transform: translateX(-2px); }
+    75% { clip: rect(60px, 9999px, 90px, 0); transform: translateX(2px); }
+    100% { clip: rect(30px, 9999px, 20px, 0); transform: translateX(0); }
+}
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 5px var(--glitch-red); }
+    50% { box-shadow: 0 0 20px var(--glitch-red); }
+    100% { box-shadow: 0 0 5px var(--glitch-red); }
+}
+
+/* --- Typography --- */
+
+.glitch-text {
+    font-family: 'Orbitron', sans-serif;
+    position: relative;
+    color: white;
+    font-size: 6rem;
+    font-weight: 900;
+    letter-spacing: -5px;
+    animation: glitch-skew 1.5s infinite linear alternate-reverse;
+    text-transform: uppercase;
+}
+
+.glitch-text::before, .glitch-text::after {
+    content: "Z⧋R⟠X";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+
+.glitch-text::before {
+    left: 3px;
+    text-shadow: -3px 0 var(--glitch-cyan);
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim 4s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+    left: -3px;
+    text-shadow: -3px 0 var(--glitch-red);
+    clip: rect(10px, 450px, 30px, 0);
+    animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+
+/* --- UI Screens Layout --- */
+
+.screen {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #0a0a0f 0%, #050505 100%);
+    backdrop-filter: blur(5px);
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* --- Visual Artifacts --- */
+
+.scanline {
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0, 240, 255, 0.03) 50%, rgba(0,0,0,0) 100%);
+    position: absolute;
+    top: -100px;
+    left: 0;
+    z-index: 100;
+    pointer-events: none;
+    animation: scan 10s linear infinite;
+}
+
+@keyframes scan {
+    0% { top: -100px; }
+    100% { top: 100%; }
+}
+
+.vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 150%);
+    pointer-events: none;
+    z-index: 50;
+}
+
+/* --- Interactive Elements --- */
+
+.btn-action {
+    position: relative;
+    border: 1px solid var(--glitch-cyan);
+    padding: 14px 50px;
+    background: rgba(0, 240, 255, 0.05);
+    color: var(--glitch-cyan);
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
+}
+
+.btn-action:hover {
+    background: var(--glitch-cyan);
+    color: black;
+    box-shadow: 0 0 25px var(--glitch-cyan);
+    transform: scale(1.05);
+}
+
+.btn-action:active {
+    transform: scale(0.95);
+}
+
+.btn-action.locked {
+    border-color: var(--glitch-red);
+    color: var(--glitch-red);
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --- Data Cards (Integrity Core / Map Selection) --- */
+
+.data-card {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-dim);
+    padding: 24px;
+    width: 300px;
+    transition: all 0.4s;
+    position: relative;
+    clip-path: polygon(0 0, 90% 0, 100% 10%, 100% 100%, 10% 100%, 0 90%);
+}
+
+.data-card:hover {
+    border-color: var(--glitch-cyan);
+    transform: translateY(-5px);
+}
+
+.data-card.selected {
+    border-color: var(--glitch-red);
+    background: rgba(255, 0, 60, 0.08);
+    box-shadow: 0 0 20px rgba(255, 0, 60, 0.2);
+    animation: pulse-red 2s infinite;
+}
+
+.data-card::before {
+    content: "NODE_STABLE";
+    position: absolute;
+    bottom: 5px;
+    right: 15px;
+    font-size: 8px;
+    opacity: 0.3;
+}
+
+.data-card.selected::before {
+    content: "CRITICAL_CONFLICT";
+    color: var(--glitch-red);
+    opacity: 1;
+}
+
+/* --- Integrity & Stability Bars --- */
+
+.integrity-bar {
+    width: 100%;
+    height: 4px;
+    background: #111;
+    margin: 15px 0 5px 0;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.integrity-fill {
+    height: 100%;
+    background: var(--glitch-cyan);
+    width: 100%;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px var(--glitch-cyan);
+}
+
+.selected .integrity-fill {
+    background: var(--glitch-red);
+    box-shadow: 0 0 10px var(--glitch-red);
+}
+
+/* --- HUD & In-Game UI --- */
+
+.hud-container {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.hud-element {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 20px;
+    border-left: 2px solid var(--glitch-cyan);
+}
+
+.hud-right {
+    border-left: none;
+    border-right: 2px solid var(--glitch-red);
+    text-align: right;
+}
+
+/* --- Canvas Elements --- */
+
+#game-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    image-rendering: pixelated;
+}
+
+/* --- Debug & Utility --- */
+
+.terminal-log {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font-size: 10px;
+    color: var(--terminal-green);
+    max-width: 300px;
+    pointer-events: none;
+    z-index: 15;
+}
+
+.error-border {
+    border-color: var(--glitch-red) !important;
+}
+
+.shaking {
+    animation: glitch-skew 0.1s infinite;
+}
+
+/* --- Multi-Player Indicators --- */
+.player-tag {
+    font-size: 10px;
+    padding: 2px 5px;
+    margin-right: 5px;
+    background: #333;
+    color: white;
+}
