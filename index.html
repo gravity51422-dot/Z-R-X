@@ -1,1 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z⧋R⟠X // SYSTEM_CONFLICT</title>
+    
+    <!-- CSS 연결 -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Tailwind CSS (레이아웃 보조용) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        glitch: {
+                            red: '#ff003c',
+                            cyan: '#00f0ff'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#050505] text-white overflow-hidden select-none">
 
+    <!-- 시각적 효과 레이어 -->
+    <div class="fixed inset-0 pointer-events-none z-[100] opacity-10 scanline"></div>
+    <div class="fixed inset-0 pointer-events-none z-[101] vignette"></div>
+
+    <!-- 시스템 로그 (좌측 하단) -->
+    <div id="system-logs" class="fixed bottom-6 left-6 z-50 text-[10px] font-mono opacity-60 pointer-events-none">
+        > SYSTEM_BOOT_SEQUENCE_COMPLETE<br>
+        > KERNEL_LOADED: ZaroxEngine_v1.0.4<br>
+        > READY_FOR_CONFLICT...
+    </div>
+
+    <!-- 메인 메뉴 화면 -->
+    <div id="screen-menu" class="fixed inset-0 flex flex-col items-center justify-center z-40 transition-opacity duration-500 bg-black/80">
+        <div class="relative group">
+            <h1 class="glitch-text text-8xl md:text-9xl font-black mb-2 select-none tracking-tighter" data-text="Z⧋R⟠X">Z⧋R⟠X</h1>
+            <div class="absolute -inset-1 bg-gradient-to-r from-red-500 to-cyan-500 opacity-20 blur group-hover:opacity-40 transition duration-1000"></div>
+        </div>
+        <p class="text-glitch-cyan tracking-[0.4em] text-xs mb-12 animate-pulse">UNAUTHORIZED_ACCESS_DETECTED</p>
+        
+        <!-- Zarox 인스턴스 확인 후 실행하도록 수정 -->
+        <button onclick="safeChangeState('LOBBY')" class="btn-action px-12 py-3 border border-glitch-cyan text-glitch-cyan hover:bg-glitch-cyan/10 transition-all uppercase tracking-widest text-sm">
+            Initialize_Core
+        </button>
+    </div>
+
+    <!-- 캐릭터 선택 화면 (Lobby) -->
+    <div id="screen-lobby" class="fixed inset-0 hidden flex flex-col items-center justify-center z-30 bg-black/90">
+        <h2 class="text-2xl mb-12 tracking-[0.5em] text-glitch-cyan">SELECT_INTEGRITY_CORE</h2>
+        
+        <!-- 캐릭터 카드 리스트 (Lobby.js에서 동적 생성) -->
+        <div id="character-list" class="flex gap-6 max-w-6xl overflow-x-auto p-4">
+            <!-- Loading State -->
+            <div class="text-white/20 animate-pulse uppercase">Syncing_Nodes...</div>
+        </div>
+
+        <button onclick="safeChangeState('MAP_SELECT')" class="btn-action mt-12 px-10 py-2 border border-white/50 hover:border-white transition-all text-xs tracking-widest">
+            Confirm_Link
+        </button>
+    </div>
+
+    <!-- 맵 선택 화면 -->
+    <div id="screen-map" class="fixed inset-0 hidden flex flex-col items-center justify-center z-20 bg-black/90">
+        <h2 class="text-2xl mb-12 tracking-[0.5em] text-glitch-red">SECTOR_ALLOCATION</h2>
+        
+        <div id="map-list" class="flex gap-6 p-4">
+            <!-- MapSelect.js에서 동적 생성 -->
+        </div>
+
+        <button onclick="safeChangeState('PLAYING')" class="btn-action mt-12 px-10 py-2 border border-glitch-red text-glitch-red hover:bg-glitch-red/10 transition-all text-xs tracking-widest">
+            Execute_Conflict
+        </button>
+    </div>
+
+    <!-- 메인 게임 캔버스 -->
+    <canvas id="game-canvas" class="block w-full h-full"></canvas>
+
+    <!-- JS 라이브러리 및 모듈 연결 (순서 중요) -->
+    <!-- 1. Core Config & Manager -->
+    <script src="js/core/SoundManager.js"></script>
+    
+    <!-- 2. Entities (Player, Projectile) -->
+    <script src="js/entities/Player.js"></script>
+    <script src="js/entities/Projectile.js"></script>
+    
+    <!-- 3. Sub-Controllers -->
+    <script src="js/core/menu.js"></script>
+    <script src="js/core/lobby.js"></script>
+    <script src="js/core/map-select.js"></script>
+    <script src="js/core/gameplay.js"></script>
+    
+    <!-- 4. Main Engine (이 모든 것을 하나로 묶음) -->
+    <script src="js/core/main.js"></script>
+
+    <script>
+        /**
+         * Zarox 인스턴스가 로드되지 않았을 때의 에러를 방지하기 위한 안전한 호출 함수
+         */
+        function safeChangeState(state) {
+            if (window.Zarox && typeof window.Zarox.changeState === 'function') {
+                window.Zarox.changeState(state);
+            } else {
+                console.warn("SYSTEM_ERROR: Engine not yet initialized. Retrying...");
+                // 엔진이 로드될 때까지 잠시 기다렸다가 다시 시도하거나 로그를 남깁니다.
+            }
+        }
+
+        /**
+         * Global Screen Management
+         * Zarox.changeState() 내에서 호출됨
+         */
+        function changeScreen(screenId) {
+            // 모든 화면 숨기기
+            document.querySelectorAll('[id^="screen-"]').forEach(screen => {
+                screen.classList.add('hidden');
+                screen.classList.remove('flex');
+            });
+
+            // 대상 화면 보이기
+            const target = document.getElementById(screenId);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('flex');
+                
+                // 데이터 존재 여부 확인 후 초기화 호출
+                const charData = window.Zarox ? window.Zarox.data.characters : [];
+                const mapData = window.Zarox ? window.Zarox.data.maps : [];
+
+                if (screenId === 'screen-lobby' && window.Lobby && !window.Lobby.initialized) {
+                    window.Lobby.init(charData);
+                }
+                if (screenId === 'screen-map' && window.MapSelect && !window.MapSelect.initialized) {
+                    window.MapSelect.init(mapData);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
