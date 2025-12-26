@@ -1,0 +1,33 @@
+/* --- SYSTEM FONT LINKING --- */
+
+@font-face {
+    font-family: 'ZaroxMain';
+    /* 확장자가 ttf라면 fonts.ttf로 수정하세요 */
+    src: url('../assets/fonts/fonts.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* 모든 게임 폰트를 ZaroxMain으로 교체 */
+:root {
+    --glitch-red: #ff003c;
+    --glitch-cyan: #00f0ff;
+    --bg-dark: #050505;
+}
+
+body, button, input {
+    font-family: 'ZaroxMain', 'Fira Code', monospace;
+}
+
+.glitch-text {
+    font-family: 'ZaroxMain', sans-serif;
+    /* 폰트 스타일에 따라 크기 조정 */
+    font-size: 8rem; 
+    letter-spacing: -2px;
+}
+
+/* 텍스트가 깨지는 느낌을 줄 때 폰트가 중요함 */
+.terminal-log {
+    font-family: 'Fira Code', monospace; /* 로그는 코딩 폰트 유지 */
+}
