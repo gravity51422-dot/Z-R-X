@@ -1,1 +1,65 @@
-
+{
+"characters": [
+{
+"id": "CORE_STRIKER",
+"name": "ALPHA STRIKER",
+"description": "균형 잡힌 성능을 가진 표준 전투 모듈",
+"stats": {
+"integrity": 100,
+"stability": 70,
+"speed": 5,
+"damage": 15,
+"range": 300,
+"cooldown": 800
+},
+"skill": {
+"name": "GLITCH_DASH",
+"type": "movement",
+"value": 150,
+"cooldown": 3000
+}
+},
+{
+"id": "CORE_FORTRESS",
+"name": "BETA FORTRESS",
+"description": "높은 무결성을 가진 중장갑 방어 모듈",
+"stats": {
+"integrity": 180,
+"stability": 100,
+"speed": 3,
+"damage": 12,
+"range": 250,
+"cooldown": 1200
+},
+"skill": {
+"name": "SHIELD_OVERLOAD",
+"type": "defense",
+"value": 50,
+"cooldown": 5000
+}
+},
+{
+"id": "CORE_PHANTOM",
+"name": "GAMMA PHANTOM",
+"description": "낮은 안정성을 희생하여 속도를 극대화한 침투 모듈",
+"stats": {
+"integrity": 70,
+"stability": 40,
+"speed": 8,
+"damage": 25,
+"range": 400,
+"cooldown": 600
+},
+"skill": {
+"name": "SYSTEM_INVISIBILITY",
+"type": "stealth",
+"duration": 2000,
+"cooldown": 7000
+}
+}
+],
+"global_settings": {
+"respawn_time": 3000,
+"max_stability_bonus": 20
+}
+}
