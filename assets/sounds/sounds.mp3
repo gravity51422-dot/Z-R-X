@@ -1,0 +1,108 @@
+/**
+ * Z⧋R⟠X // SYSTEM_CONFLICT
+ * Sound Manager Core (Audio Sprite Version)
+ */
+
+class SoundManager {
+    constructor() {
+        this.masterAudio = null;
+        this.isMuted = false;
+        this.isInitialized = false;
+        
+        // 단일 사운드 파일 경로
+        this.audioSrc = 'assets/sounds/sounds.mp3';
+
+        // 사운드 스프라이트 정의 (시작 시간, 지속 시간 - 초 단위)
+        // 실제 sounds.mp3 파일의 편집 내용에 맞춰 아래 숫자를 조정해야 합니다.
+        this.spriteMap = {
+            'MENU_BGM': { start: 0, duration: 30, loop: true },
+            'BATTLE_BGM': { start: 35, duration: 60, loop: true },
+            'UI_CLICK': { start: 100, duration: 0.5, loop: false },
+            'UI_GLITCH': { start: 102, duration: 1.2, loop: false },
+            'LASER_SHOOT': { start: 105, duration: 0.8, loop: false },
+            'CORE_HIT': { start: 107, duration: 0.6, loop: false },
+            'SYSTEM_CRASH': { start: 110, duration: 2.5, loop: false }
+        };
+
+        this.activeIntervals = {};
+    }
+
+    // 시스템 초기화 및 마스터 오디오 로드
+    init() {
+        if (this.isInitialized) return;
+
+        this.masterAudio = new Audio(this.audioSrc);
+        this.masterAudio.load();
+        this.isInitialized = true;
+        
+        console.log("SYSTEM_AUDIO: Master sound module (sounds.mp3) linked.");
+    }
+
+    // 특정 스프라이트 재생
+    play(key) {
+        if (this.isMuted || !this.isInitialized) return;
+        
+        const sprite = this.spriteMap[key];
+        if (!sprite) {
+            console.warn(`AUDIO_ERROR: Sprite [${key}] not found.`);
+            return;
+        }
+
+        // 개별 재생을 위해 오디오 객체 복제 (다중 중첩 재생 가능)
+        const soundInstance = new Audio(this.audioSrc);
+        soundInstance.currentTime = sprite.start;
+        soundInstance.volume = this.masterAudio.volume;
+        
+        soundInstance.play().catch(e => {
+            console.warn(`AUDIO_ERROR: Interaction required for [${key}].`);
+        });
+
+        // 재생 범위 제한 및 루프 처리
+        const checkTime = () => {
+            if (soundInstance.currentTime >= sprite.start + sprite.duration) {
+                if (sprite.loop) {
+                    soundInstance.currentTime = sprite.start;
+                } else {
+                    soundInstance.pause();
+                    soundInstance.removeEventListener('timeupdate', checkTime);
+                }
+            }
+        };
+
+        soundInstance.addEventListener('timeupdate', checkTime);
+        
+        // 현재 배경음악 관리용 (필요 시 정지 가능하게 저장)
+        if (sprite.loop) {
+            this.activeIntervals[key] = soundInstance;
+        }
+    }
+
+    // 특정 사운드(주로 BGM) 정지
+    stop(key) {
+        if (this.activeIntervals[key]) {
+            this.activeIntervals[key].pause();
+            delete this.activeIntervals[key];
+        }
+    }
+
+    // 배경음 전환
+    switchBGM(newBGMKey) {
+        // 기존 루프 중인 모든 사운드 정지
+        for (let key in this.activeIntervals) {
+            this.stop(key);
+        }
+        this.play(newBGMKey);
+    }
+
+    setVolume(value) {
+        if (this.masterAudio) this.masterAudio.volume = value;
+    }
+}
+
+// 전역 인스턴스 생성
+const AudioManager = new SoundManager();
+
+// 브라우저 보안 정책상 유저의 첫 상호작용 시 오디오 엔진 가동
+window.addEventListener('mousedown', () => {
+    AudioManager.init();
+}, { once: true });
