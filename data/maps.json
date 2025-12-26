@@ -1,1 +1,51 @@
-
+{
+"maps": [
+{
+"id": "SECTOR_ROOT",
+"name": "SYSTEM_ROOT",
+"theme": "CORE_DIRECTORY",
+"difficulty": 1,
+"config": {
+"gravity": 0,
+"friction": 0.95,
+"glitch_intensity": 0.2,
+"background_color": "#050505"
+},
+"elements": {
+"obstacles": [
+{ "x": 400, "y": 300, "width": 100, "height": 20, "type": "DATA_BLOCK" },
+{ "x": 800, "y": 600, "width": 20, "height": 100, "type": "DATA_BLOCK" }
+],
+"spawn_points": {
+"p1": { "x": 100, "y": 100 },
+"p2": { "x": 1100, "y": 700 }
+}
+}
+},
+{
+"id": "SECTOR_VOID",
+"name": "MEMORY_VOID",
+"theme": "NULL_POINTER",
+"difficulty": 3,
+"config": {
+"gravity": 0,
+"friction": 0.98,
+"glitch_intensity": 0.8,
+"background_color": "#0a0005"
+},
+"elements": {
+"obstacles": [
+{ "x": 600, "y": 450, "width": 50, "height": 50, "type": "VOID_HOLE" }
+],
+"spawn_points": {
+"p1": { "x": 200, "y": 450 },
+"p2": { "x": 1000, "y": 450 }
+}
+}
+}
+],
+"tile_settings": {
+"size": 40,
+"collision_layer": true
+}
+}
